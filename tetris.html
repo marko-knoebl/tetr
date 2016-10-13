@@ -125,13 +125,12 @@
       }
 
       document.querySelector('body').addEventListener('keydown', function(event) {
-        if (event.keyCode === 37 || event.keyCode === 39) {
-          var direction = {37: 'l', 39: 'r'}[event.keyCode];
+        if (event.keyCode === 37 || event.keyCode === 39 || event.keyCode === 40) {
+          var direction = {37: 'l', 39: 'r', 40: 'd'}[event.keyCode];
           var nextShape = moveShape(currentShape, direction);
-          // TODO
           if (canMoveTo(nextShape)) {
             currentShape = nextShape;
-            render()
+            render();
           }
         }
       });
