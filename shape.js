@@ -40,7 +40,7 @@ Shape.prototype.moved = function(direction) {
   // return a copy of the shape moved in a specific direction
   var movedShape = new Shape();
   movedShape.blocks = [];
-  movedShape.center = this.center;
+  movedShape.center = this.center.slice();
   this.blocks.forEach(function(block) {
     block = block.slice();
     if (direction === 'r') {
@@ -71,7 +71,6 @@ Shape.prototype.moved = function(direction) {
 };
 
 Shape.prototype.rotated = function() {
-  // TODO: this does not work properly
   // return a copy of the shape rotated 90° clockwise
   var center = this.center;
   var movedBlocks = [];
