@@ -15,7 +15,7 @@
       // size of one block in px
       var blockSize = 20;
       // field size in blocks
-      var fieldSize = [10, 10];
+      var fieldSize = [10, 20];
       var interval = 600;
       
       var existingBlocks = [];
@@ -47,6 +47,7 @@
             // shape is hitting bottom or another shape
             // create a new shape instead
             existingBlocks = existingBlocks.concat(currentShape.blocks);
+            existingBlocks = clearFullRows(existingBlocks, fieldSize);
             currentShape = getRandomShape();
           }
           render();
@@ -58,6 +59,39 @@
         // check if a shape can move to a certain position
         // by moving left or right, down or rotating
         return shape.isInsideField() && !shape.overlapsAny(existingBlocks);
+      }
+
+      // FIXME: this mutates the input
+      function clearFullRows(existingBlocks, fieldSize) {
+        // removes complete rows from the model
+        var counts = [];
+        for (var i = 0; i < fieldSize[1]; i ++) {
+          counts.push(0);
+        }
+        existingBlocks.forEach(function(block) {
+          counts[block[1]] ++;
+        });
+        for (var i = 0; i < fieldSize[1]; i ++) {
+          if (counts[i] === fieldSize[0]) {
+            // there's a full row
+            var existingBlocks_ = []
+            // copy all but the full row
+            existingBlocks.forEach(function(block, index) {
+              if (block[1] !== i) {
+                existingBlocks_.push(block);
+              }
+            });
+            // move rows above full row further down
+            existingBlocks_.forEach(function(block) {
+              if (block[1] < i) {
+                block[1] ++;
+              }
+            });
+            // overwrite the original
+            existingBlocks = existingBlocks_;
+          }
+        }
+        return existingBlocks;
       }
 
       document.querySelector('body').addEventListener('keydown', function(event) {
