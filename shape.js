@@ -3,23 +3,42 @@
 var shapeTemplates = {
   O: {
     blocks: [[4, 0], [5, 0], [4, 1], [5, 1]],
-    center: [4.5, 0.5]
+    center: [4.5, 0.5],
+    color: '#3f51b5'
   },
   I: {
     blocks: [[4, 0], [4, 1], [4, 2], [4, 3]],
-    center: [4, 1]
+    center: [4, 1],
+    color: '#00bcd4'
   },
   L: {
     blocks: [[4, 0], [4, 1], [4, 2], [5, 2]],
-    center: [4, 1]
+    center: [4, 1],
+    color: '#9c27b0'
   },
   J: {
     blocks: [[5, 0], [5, 1], [5, 2], [4, 2]],
-    center: [4, 1]
+    center: [4, 1],
+    color: '#9e9e9e'
+  },
+  S: {
+    blocks: [[4, 1], [5, 1], [5, 0], [6, 0]],
+    center: [5, 0],
+    color: '#4caf50'
+  },
+  Z: {
+    blocks: [[4, 0], [5, 0], [5, 1], [6, 1]],
+    center: [5, 0],
+    color: 'red'
+  },
+  T: {
+    blocks: [[4, 0], [5, 0], [6, 0], [5, 1]],
+    center: [5, 0],
+    color: '#795548'
   }
 };
 
-var templateNames = ['O', 'I', 'L', 'J'];
+var templateNames = ['O', 'I', 'L', 'J', 'S', 'Z', 'T'];
 
 function Shape(name) {
 }
