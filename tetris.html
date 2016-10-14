@@ -57,14 +57,7 @@
       function canMoveTo(shape) {
         // check if a shape can move to a certain position
         // by moving left or right, down or rotating
-        return isAboveBottom(shape.blocks) && isInsideArea(shape.blocks) && !overlapsExistingBlocks(shape.blocks);
-      }
-
-      function isAboveBottom(shape) {
-        if (shape[3][1] >= fieldSize[1]) {
-          return false;
-        }
-        return true;
+        return shape.isInsideField() && !overlapsExistingBlocks(shape.blocks);
       }
 
       function overlapsExistingBlocks(shape) {
@@ -77,16 +70,6 @@
           }
         }
         return false;
-      }
-
-      function isInsideArea(shape) {
-        var inside = true
-        shape.forEach(function(block) {
-          if (block[0] < 0 || block[0] > fieldSize[0]-1) {
-            inside = false;
-          }
-        });
-        return inside;
       }
 
       document.querySelector('body').addEventListener('keydown', function(event) {

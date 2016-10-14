@@ -68,7 +68,7 @@ Shape.prototype.moved = function(direction) {
     throw 'invalid direction';
   }
   return movedShape;
-}
+};
 
 Shape.prototype.rotated = function() {
   // TODO: this does not work properly
@@ -83,4 +83,14 @@ Shape.prototype.rotated = function() {
   newShape.center = center;
   newShape.blocks = movedBlocks;
   return newShape;
-}
+};
+
+Shape.prototype.isInsideField = function() {
+  var inside = true
+  this.blocks.forEach(function(block) {
+    if (block[0] < 0 || block[0] > fieldSize[0]-1 || block[1] > fieldSize[1]-1) {
+      inside = false;
+    }
+  });
+  return inside;
+};
