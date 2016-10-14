@@ -69,3 +69,18 @@ Shape.prototype.moved = function(direction) {
   }
   return movedShape;
 }
+
+Shape.prototype.rotated = function() {
+  // TODO: this does not work properly
+  // return a copy of the shape rotated 90° clockwise
+  var center = this.center;
+  var movedBlocks = [];
+  this.blocks.forEach(function(block) {
+    var newBlock = [-(block[1]-center[1])+center[0], block[0]-center[0]+center[1]];
+    movedBlocks.push(newBlock);
+  });
+  var newShape = new Shape();
+  newShape.center = center;
+  newShape.blocks = movedBlocks;
+  return newShape;
+}

@@ -37,21 +37,6 @@
         return <div style={ {backgroundColor: 'red', position: 'absolute', width: blockSize, height: blockSize, left: blockSize * position[0], top: blockSize * position[1]} }></div>
       }
 
-      function rotateShape(shape) {
-        // TODO: this does not work properly
-        // return a copy of the shape rotated 90° clockwise
-        var center = shape.center;
-        var movedBlocks = [];
-        shape.blocks.forEach(function(block) {
-          var newBlock = [-(block[1]-center[1])+center[0], block[0]-center[0]+center[1]];
-          movedBlocks.push(newBlock);
-        });
-        var newShape = new Shape();
-        newShape.center = center;
-        newShape.blocks = movedBlocks;
-        return newShape;
-      }
-
       setInterval(
         // move active shape downwards every x ms
         function() {
@@ -113,7 +98,7 @@
             render();
           }
         } else if (event.keyCode === 38) {
-          var nextShape = rotateShape(currentShape);
+          var nextShape = currentShape.rotated();
           if (canMoveTo(nextShape)) {
             currentShape = nextShape;
             render();
