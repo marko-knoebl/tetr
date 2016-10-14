@@ -57,19 +57,7 @@
       function canMoveTo(shape) {
         // check if a shape can move to a certain position
         // by moving left or right, down or rotating
-        return shape.isInsideField() && !overlapsExistingBlocks(shape.blocks);
-      }
-
-      function overlapsExistingBlocks(shape) {
-        // check if the shape overlaps with existing blocks
-        for (var i in existingBlocks) {
-          for (var j in shape) {
-            if (existingBlocks[i][0] === shape[j][0] && existingBlocks[i][1] === shape[j][1]) {
-              return true;
-            }
-          }
-        }
-        return false;
+        return shape.isInsideField() && !shape.overlapsAny(existingBlocks);
       }
 
       document.querySelector('body').addEventListener('keydown', function(event) {

@@ -94,3 +94,15 @@ Shape.prototype.isInsideField = function() {
   });
   return inside;
 };
+
+Shape.prototype.overlapsAny = function(existingBlocks) {
+  // check if the shape overlaps with existing blocks
+  for (var i in existingBlocks) {
+    for (var j in this.blocks) {
+      if (existingBlocks[i][0] === this.blocks[j][0] && existingBlocks[i][1] === this.blocks[j][1]) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
