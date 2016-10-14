@@ -9,6 +9,7 @@
   </head>
   <body>
     <div id="main"></div>
+    <script src="shape.js"></script>
     <script type="text/babel">
       
       // size of one block in px
@@ -16,37 +17,11 @@
       // field size in blocks
       var fieldSize = [10, 10];
       var interval = 600;
-
-      var shapeTemplates = [
-        {
-          blocks: [[4, 0], [5, 0], [4, 1], [5, 1]],
-          center: [4.5, 0.5]
-        },
-        {
-          blocks: [[4, 0], [4, 1], [4, 2], [4, 3]],
-          center: [4, 1]
-        },
-        {
-          blocks: [[4, 0], [4, 1], [4, 2], [5, 2]],
-          center: [4, 1]
-        },
-        {
-          blocks: [[5, 0], [5, 1], [5, 2], [4, 2]],
-          center: [4, 1]
-        }
-      ];
       
       var existingBlocks = [];
 
       var currentShape = getRandomShape();
-      
-      function getRandomShape() {
-        var shape = shapeTemplates[Math.floor(Math.random() * shapeTemplates.length)];
-        var newShape = {blocks: [], center: shape.center.slice()};
-        shape.blocks.forEach(function(block) {newShape.blocks.push(block);});
-        return newShape;
-      }
-      
+
       function render() {
         ReactDOM.render(
           <div>
@@ -62,41 +37,6 @@
         return <div style={ {backgroundColor: 'red', position: 'absolute', width: blockSize, height: blockSize, left: blockSize * position[0], top: blockSize * position[1]} }></div>
       }
 
-      function moveShape(shape, direction) {
-        // return a copy of the shape moved in a specific direction
-        var movedShape = {
-          blocks: [],
-          center: shape.center
-        }
-        shape.blocks.forEach(function(block) {
-          block = block.slice();
-          if (direction === 'r') {
-            block[0] ++;
-          } else if (direction == 'l') {
-            block[0] --;
-          } else if (direction == 'u') {
-            block[1] --;
-          } else if (direction == 'd') {
-            block[1] ++;
-          } else {
-            throw 'invalid direction';
-          }
-          movedShape.blocks.push(block);
-        });
-        if (direction === 'r') {
-          movedShape.center[0] ++;
-        } else if (direction === 'l') {
-          movedShape.center[0] --;
-        } else if (direction === 'u') {
-          movedShape.center[1] --;
-        } else if (direction === 'd') {
-          movedShape.center[1] ++;
-        } else {
-          throw 'invalid direction';
-        }
-        return movedShape;
-      }
-
       function rotateShape(shape) {
         // TODO: this does not work properly
         // return a copy of the shape rotated 90° clockwise
@@ -106,15 +46,18 @@
           var newBlock = [-(block[1]-center[1])+center[0], block[0]-center[0]+center[1]];
           movedBlocks.push(newBlock);
         });
-        return {center: center, blocks: movedBlocks};
+        var newShape = new Shape();
+        newShape.center = center;
+        newShape.blocks = movedBlocks;
+        return newShape;
       }
 
       setInterval(
         // move active shape downwards every x ms
         function() {
-          var nextShape = moveShape(currentShape, 'd');
+          var nextShape = currentShape.moved('d');//moveShape(currentShape, 'd');
           if (canMoveTo(nextShape)) {
-            currentShape = moveShape(currentShape, 'd');
+            currentShape = currentShape.moved('d');//moveShape(currentShape, 'd');
           } else {
             // shape is hitting bottom or another shape
             // create a new shape instead
@@ -164,7 +107,7 @@
       document.querySelector('body').addEventListener('keydown', function(event) {
         if (event.keyCode === 37 || event.keyCode === 39 || event.keyCode === 40) {
           var direction = {37: 'l', 39: 'r', 40: 'd'}[event.keyCode];
-          var nextShape = moveShape(currentShape, direction);
+          var nextShape = currentShape.moved(direction);//moveShape(currentShape, direction);
           if (canMoveTo(nextShape)) {
             currentShape = nextShape;
             render();
