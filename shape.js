@@ -29,7 +29,7 @@ var shapeTemplates = {
   Z: {
     blocks: [[4, 0], [5, 0], [5, 1], [6, 1]],
     center: [5, 0],
-    color: 'red'
+    color: '#f44336'
   },
   T: {
     blocks: [[4, 0], [5, 0], [6, 0], [5, 1]],
@@ -52,6 +52,7 @@ function getRandomShape() {
     blocks.push(block.slice());
   });
   shape.blocks = blocks;
+  shape.color = shapeTemplates[name].color;
   return shape;
 }
 
@@ -60,6 +61,7 @@ Shape.prototype.moved = function(direction) {
   var movedShape = new Shape();
   movedShape.blocks = [];
   movedShape.center = this.center.slice();
+  movedShape.color = this.color;
   this.blocks.forEach(function(block) {
     block = block.slice();
     if (direction === 'r') {
@@ -100,6 +102,7 @@ Shape.prototype.rotated = function() {
   var newShape = new Shape();
   newShape.center = center;
   newShape.blocks = movedBlocks;
+  newShape.color = this.color;
   return newShape;
 };
 

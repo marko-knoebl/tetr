@@ -24,14 +24,24 @@
 
       function render() {
         ReactDOM.render(
-          <div>
-            {currentShape.blocks.map(createBlock)}
+          <div style={ {border: "1px solid #202020", width: blockSize*fieldSize[0], height: blockSize*fieldSize[1], position: 'relative'} }>
+            {createDivShape(currentShape)}
             {existingBlocks.map(createBlock)}
           </div>,
           document.querySelector('#main')
         );
       }
       
+      function createDivShape(shape) {
+        // create a tetris shape consisting of divs
+        var blocks = [];
+        shape.blocks.forEach(function(block) {
+          var divBlock = <div style={ {backgroundColor: shape.color, position: 'absolute', width: blockSize, height: blockSize, left: blockSize * block[0], top: blockSize * block[1]}}></div>;
+          blocks.push(divBlock);
+        });
+        return blocks;
+      }
+
       function createBlock(position) {
         // create a div representing a block at a specific position
         return <div style={ {backgroundColor: 'red', position: 'absolute', width: blockSize, height: blockSize, left: blockSize * position[0], top: blockSize * position[1]} }></div>
