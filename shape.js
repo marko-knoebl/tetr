@@ -40,87 +40,108 @@ var shapeTemplates = {
 
 var templateNames = ['O', 'I', 'L', 'J', 'S', 'Z', 'T'];
 
-function Shape(name) {
+function Block(x, y, color) {
+  this.position = [x, y];
+  this.color = color;
 }
 
-function getRandomShape() {
-  var shape = new Shape();
+Block.prototype.copy = function() {
+  return new Block(this.position.x, this.position.y, this.color);
+}
+
+Block.prototype.moved = function(direction) {
+  var x = this.position[0];
+  var y = this.position[1];
+  var color = this.color;
+  if (direction === 'r') {
+    x ++;
+  } else if (direction === 'l') {
+    x --;
+  } else if (direction === 'd') {
+    y ++;
+  } else {
+    throw 'Invalid direction: ' + direction;
+  }
+  return new Block(x, y, color);
+}
+
+function Shape() {
+}
+
+/**
+ * create and return a random new shape
+ */
+Shape.getRandom = function() {
   var name = templateNames[Math.floor(Math.random() * templateNames.length)];
+  var shape = new Shape();
   shape.center = shapeTemplates[name].center.slice();
-  var blocks = [];
-  shapeTemplates[name].blocks.forEach(function(block) {
-    blocks.push(block.slice());
+  shape.blocks = shapeTemplates[name].blocks.map(function(block) {
+    return new Block(block[0], block[1], shapeTemplates[name].color);
   });
-  shape.blocks = blocks;
-  shape.color = shapeTemplates[name].color;
   return shape;
-}
+};
 
+/**
+ * return a copy of the shape that was moved in the specified direction
+ * ('r', 'l', 'd')
+ */
 Shape.prototype.moved = function(direction) {
   // return a copy of the shape moved in a specific direction
   var movedShape = new Shape();
-  movedShape.blocks = [];
   movedShape.center = this.center.slice();
-  movedShape.color = this.color;
-  this.blocks.forEach(function(block) {
-    block = block.slice();
-    if (direction === 'r') {
-      block[0] ++;
-    } else if (direction == 'l') {
-      block[0] --;
-    } else if (direction == 'u') {
-      block[1] --;
-    } else if (direction == 'd') {
-      block[1] ++;
-    } else {
-      throw 'invalid direction';
-    }
-    movedShape.blocks.push(block);
+  movedShape.blocks = this.blocks.map(function(block) {
+    return block.moved(direction);
   });
   if (direction === 'r') {
     movedShape.center[0] ++;
   } else if (direction === 'l') {
     movedShape.center[0] --;
-  } else if (direction === 'u') {
-    movedShape.center[1] --;
   } else if (direction === 'd') {
     movedShape.center[1] ++;
   } else {
-    throw 'invalid direction';
+    throw 'invalid direction: ' + direction;
   }
   return movedShape;
 };
 
+/**
+ * return a copy of the shape that was rotated 90° clockwise
+ */
 Shape.prototype.rotated = function() {
-  // return a copy of the shape rotated 90° clockwise
   var center = this.center;
-  var movedBlocks = [];
-  this.blocks.forEach(function(block) {
-    var newBlock = [-(block[1]-center[1])+center[0], block[0]-center[0]+center[1]];
-    movedBlocks.push(newBlock);
+  var movedBlocks = this.blocks.map(function(block) {
+    return new Block(
+      -(block.position[1]-center[1])+center[0],
+      block.position[0]-center[0]+center[1],
+      block.color
+    );
   });
   var newShape = new Shape();
-  newShape.center = center;
+  newShape.center = center.slice();
   newShape.blocks = movedBlocks;
-  newShape.color = this.color;
   return newShape;
 };
 
-Shape.prototype.isInsideField = function() {
+/**
+ * check whether the shape is inside the field
+ */
+Shape.prototype.isInsideField = function(fieldSize) {
   var inside = true
   this.blocks.forEach(function(block) {
-    if (block[0] < 0 || block[0] > fieldSize[0]-1 || block[1] > fieldSize[1]-1) {
+    if (block.position[0] < 0 || block.position[0] > fieldSize[0]-1 || block.position[1] > fieldSize[1]-1) {
       inside = false;
     }
   });
   return inside;
 };
 
+/**
+ * check if the shape overlaps with existing blocks
+ */
 Shape.prototype.overlapsAny = function(existingBlocks) {
-  // check if the shape overlaps with existing blocks
   for (var i in existingBlocks) {
     for (var j in this.blocks) {
-      if (existingBlocks[i][0] === this.blocks[j][0] && existingBlocks[i][1] === this.blocks[j][1]) {
+      if (existingBlocks[i].position[0] === this.blocks[j].position[0] && existingBlocks[i].position[1] === this.blocks[j].position[1]) {
         return true;
       }
     }

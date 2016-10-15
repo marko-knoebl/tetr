@@ -17,58 +17,62 @@
       // field size in blocks
       var fieldSize = [10, 20];
       var interval = 600;
-      
+
       var existingBlocks = [];
 
-      var currentShape = getRandomShape();
+      var currentShape = Shape.getRandom() //getRandomShape();
 
       function render() {
         ReactDOM.render(
           <div style={ {border: "1px solid #202020", width: blockSize*fieldSize[0], height: blockSize*fieldSize[1], position: 'relative'} }>
             {createDivShape(currentShape)}
-            {existingBlocks.map(createBlock)}
+            {existingBlocks.map(createDivBlock)}
           </div>,
           document.querySelector('#main')
         );
       }
       
+      /**
+       * create a tetris shape consisting of divs
+       */
       function createDivShape(shape) {
-        // create a tetris shape consisting of divs
-        var blocks = [];
-        shape.blocks.forEach(function(block) {
-          var divBlock = <div style={ {backgroundColor: shape.color, position: 'absolute', width: blockSize, height: blockSize, left: blockSize * block[0], top: blockSize * block[1]}}></div>;
-          blocks.push(divBlock);
-        });
-        return blocks;
+        return shape.blocks.map(createDivBlock);
       }
 
-      function createBlock(position) {
-        // create a div representing a block at a specific position
-        return <div style={ {backgroundColor: 'red', position: 'absolute', width: blockSize, height: blockSize, left: blockSize * position[0], top: blockSize * position[1]} }></div>
+      /**
+       * create a div representing a block at a specific position
+       */
+      function createDivBlock(block) {
+        return <div style={ {backgroundColor: block.color, position: 'absolute', width: blockSize, height: blockSize, left: blockSize * block.position[0], top: blockSize * block.position[1]} }></div>
       }
 
       setInterval(
         // move active shape downwards every x ms
         function() {
-          var nextShape = currentShape.moved('d');//moveShape(currentShape, 'd');
+          var nextShape = currentShape.moved('d');
           if (canMoveTo(nextShape)) {
-            currentShape = currentShape.moved('d');//moveShape(currentShape, 'd');
+            currentShape = nextShape;
           } else {
             // shape is hitting bottom or another shape
             // create a new shape instead
             existingBlocks = existingBlocks.concat(currentShape.blocks);
             existingBlocks = clearFullRows(existingBlocks, fieldSize);
-            currentShape = getRandomShape();
+            currentShape = Shape.getRandom();
+            if (!canMoveTo(currentShape)) {
+              alert('Game over!');
+            }
           }
           render();
         },
         interval
       );
 
+      /**
+       * Check if a shape can move to a certain position
+       * (i.e. the position is not occupied)
+       */
       function canMoveTo(shape) {
-        // check if a shape can move to a certain position
-        // by moving left or right, down or rotating
-        return shape.isInsideField() && !shape.overlapsAny(existingBlocks);
+        return shape.isInsideField(fieldSize) && !shape.overlapsAny(existingBlocks);
       }
 
       // FIXME: this mutates the input
@@ -79,26 +83,26 @@
           counts.push(0);
         }
         existingBlocks.forEach(function(block) {
-          counts[block[1]] ++;
+          counts[block.position[1]] ++;
         });
         for (var i = 0; i < fieldSize[1]; i ++) {
           if (counts[i] === fieldSize[0]) {
             // there's a full row
-            var existingBlocks_ = []
+            var newExistingBlocks = []
             // copy all but the full row
             existingBlocks.forEach(function(block, index) {
-              if (block[1] !== i) {
-                existingBlocks_.push(block);
+              if (block.position[1] !== i) {
+                newExistingBlocks.push(block);
               }
             });
             // move rows above full row further down
-            existingBlocks_.forEach(function(block) {
-              if (block[1] < i) {
-                block[1] ++;
+            newExistingBlocks.forEach(function(block) {
+              if (block.position[1] < i) {
+                block.position[1] ++;
               }
             });
             // overwrite the original
-            existingBlocks = existingBlocks_;
+            existingBlocks = newExistingBlocks;
           }
         }
         return existingBlocks;
