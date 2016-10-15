@@ -58,7 +58,7 @@
             // shape is hitting bottom or another shape
             // create a new shape instead
             game.existingBlocks = game.existingBlocks.concat(game.currentShape.blocks);
-            game.existingBlocks = clearFullRows(game.existingBlocks, game.fieldSize);
+            game.clearFullRows();
             game.currentShape = Shape.getRandom();
             if (!game.canMoveTo(game.currentShape)) {
               alert('Game over!');
@@ -68,39 +68,6 @@
         },
         interval
       );
-
-      // FIXME: this mutates the input
-      function clearFullRows(existingBlocks, fieldSize) {
-        // removes complete rows from the model
-        var counts = [];
-        for (var i = 0; i < fieldSize[1]; i ++) {
-          counts.push(0);
-        }
-        existingBlocks.forEach(function(block) {
-          counts[block.position[1]] ++;
-        });
-        for (var i = 0; i < fieldSize[1]; i ++) {
-          if (counts[i] === fieldSize[0]) {
-            // there's a full row
-            var newExistingBlocks = []
-            // copy all but the full row
-            existingBlocks.forEach(function(block, index) {
-              if (block.position[1] !== i) {
-                newExistingBlocks.push(block);
-              }
-            });
-            // move rows above full row further down
-            newExistingBlocks.forEach(function(block) {
-              if (block.position[1] < i) {
-                block.position[1] ++;
-              }
-            });
-            // overwrite the original
-            existingBlocks = newExistingBlocks;
-          }
-        }
-        return existingBlocks;
-      }
 
       document.querySelector('body').addEventListener('keydown', function(event) {
         if (event.keyCode === 37 || event.keyCode === 39 || event.keyCode === 40) {
