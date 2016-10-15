@@ -51,18 +51,9 @@
       setInterval(
         // move active shape downwards every x ms
         function() {
-          var nextShape = game.currentShape.moved('d');
-          if (game.canMoveTo(nextShape)) {
-            game.currentShape = nextShape;
-          } else {
-            // shape is hitting bottom or another shape
-            // create a new shape instead
-            game.existingBlocks = game.existingBlocks.concat(game.currentShape.blocks);
-            game.clearFullRows();
-            game.currentShape = Shape.getRandom();
-            if (!game.canMoveTo(game.currentShape)) {
-              alert('Game over!');
-            }
+          game.tick();
+          if (game.over) {
+            alert('Game Over!');
           }
           render();
         },

@@ -7,6 +7,26 @@ function TetrisGame(config) {
 }
 
 /**
+ * This will advance the game by one step.
+ * It should be called periodically
+ */
+TetrisGame.prototype.tick = function() {
+  var nextShape = this.currentShape.moved('d');
+  if (this.canMoveTo(nextShape)) {
+    this.currentShape = nextShape;
+  } else {
+    // shape is hitting bottom or another shape
+    // create a new shape instead
+    this.existingBlocks = this.existingBlocks.concat(this.currentShape.blocks);
+    this.clearFullRows();
+    this.currentShape = Shape.getRandom();
+    if (!this.canMoveTo(this.currentShape)) {
+      this.over = true;
+    }
+  }
+};
+
+/**
  * Check if a shape can move to a certain position
  * (i.e. the position is not occupied)
  */
