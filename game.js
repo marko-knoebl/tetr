@@ -34,6 +34,35 @@ TetrisGame.prototype.canMoveTo = function(shape) {
   return shape.isInsideField(this.fieldSize) && !shape.overlapsAny(this.existingBlocks);
 };
 
+/**
+ * Move active shape in specified direction (if possible)
+ * This is a user-initiated action
+ * returns true if the model changed as a result of this
+ * function call
+ */
+TetrisGame.prototype.moveCurrentShape = function(direction) {
+  var nextShape = this.currentShape.moved(direction);
+  if (this.canMoveTo(nextShape)) {
+    this.currentShape = nextShape;
+    return true;
+  }
+  return false;
+};
+
+/**
+ * Rotate the active shape clockwise (if possible)
+ * Returns true if the model changed as a result of this
+ * function call
+ */
+TetrisGame.prototype.rotateCurrentShape = function() {
+  var nextShape = this.currentShape.rotated();
+  if (this.canMoveTo(nextShape)) {
+    this.currentShape = nextShape;
+    return true;
+  }
+  return false;
+};
+
 TetrisGame.prototype.clearFullRows = function(existingBlocks, fieldSize) {
   // removes complete rows from the model
   var counts = [];
