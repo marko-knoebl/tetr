@@ -9,24 +9,26 @@
   </head>
   <body>
     <div id="main"></div>
+    <script src="game.js"></script>
     <script src="shape.js"></script>
     <script type="text/babel">
       
+      var game = new TetrisGame({width: 10, height: 18});
+
       // size of one block in px
       var blockSize = 20;
-      // field size in blocks
-      var fieldSize = [10, 20];
       var interval = 600;
-
-      var existingBlocks = [];
 
       var currentShape = Shape.getRandom() //getRandomShape();
 
       function render() {
         ReactDOM.render(
-          <div style={ {border: "1px solid #202020", width: blockSize*fieldSize[0], height: blockSize*fieldSize[1], position: 'relative'} }>
-            {createDivShape(currentShape)}
-            {existingBlocks.map(createDivBlock)}
+          <div style={ {
+              border: "1px solid #202020",
+              width: blockSize*game.fieldSize[0],
+              height: blockSize*game.fieldSize[1], position: 'relative'} }>
+            {createDivShape(game.currentShape)}
+            {game.existingBlocks.map(createDivBlock)}
           </div>,
           document.querySelector('#main')
         );
@@ -49,16 +51,16 @@
       setInterval(
         // move active shape downwards every x ms
         function() {
-          var nextShape = currentShape.moved('d');
-          if (canMoveTo(nextShape)) {
-            currentShape = nextShape;
+          var nextShape = game.currentShape.moved('d');
+          if (game.canMoveTo(nextShape)) {
+            game.currentShape = nextShape;
           } else {
             // shape is hitting bottom or another shape
             // create a new shape instead
-            existingBlocks = existingBlocks.concat(currentShape.blocks);
-            existingBlocks = clearFullRows(existingBlocks, fieldSize);
-            currentShape = Shape.getRandom();
-            if (!canMoveTo(currentShape)) {
+            game.existingBlocks = game.existingBlocks.concat(game.currentShape.blocks);
+            game.existingBlocks = clearFullRows(game.existingBlocks, game.fieldSize);
+            game.currentShape = Shape.getRandom();
+            if (!game.canMoveTo(game.currentShape)) {
               alert('Game over!');
             }
           }
@@ -66,14 +68,6 @@
         },
         interval
       );
-
-      /**
-       * Check if a shape can move to a certain position
-       * (i.e. the position is not occupied)
-       */
-      function canMoveTo(shape) {
-        return shape.isInsideField(fieldSize) && !shape.overlapsAny(existingBlocks);
-      }
 
       // FIXME: this mutates the input
       function clearFullRows(existingBlocks, fieldSize) {
@@ -111,15 +105,15 @@
       document.querySelector('body').addEventListener('keydown', function(event) {
         if (event.keyCode === 37 || event.keyCode === 39 || event.keyCode === 40) {
           var direction = {37: 'l', 39: 'r', 40: 'd'}[event.keyCode];
-          var nextShape = currentShape.moved(direction);//moveShape(currentShape, direction);
-          if (canMoveTo(nextShape)) {
-            currentShape = nextShape;
+          var nextShape = game.currentShape.moved(direction);
+          if (game.canMoveTo(nextShape)) {
+            game.currentShape = nextShape;
             render();
           }
         } else if (event.keyCode === 38) {
-          var nextShape = currentShape.rotated();
-          if (canMoveTo(nextShape)) {
-            currentShape = nextShape;
+          var nextShape = game.currentShape.rotated();
+          if (game.canMoveTo(nextShape)) {
+            game.currentShape = nextShape;
             render();
           }
         }
