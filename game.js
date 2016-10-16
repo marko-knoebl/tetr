@@ -92,3 +92,25 @@ TetrisGame.prototype.clearFullRows = function(existingBlocks, fieldSize) {
     }
   }
 }
+
+/**
+ * Return an array of Blocks representing the playing field
+ */
+TetrisGame.prototype.getField = function() {
+  // create empty field
+  var field = [];
+  for (var i = 0; i < this.fieldSize[1]; i ++) {
+    var row = [];
+    for (var j = 0; j < this.fieldSize[0]; j ++) {
+      row.push(undefined);
+    }
+    field.push(row);
+  }
+  this.existingBlocks.forEach(function(block) {
+    field[block.position[1]][block.position[0]] = block;
+  });
+  this.currentShape.blocks.forEach(function(block) {
+    field[block.position[1]][block.position[0]] = block;
+  })
+  return field;
+}

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Tetris</title>
+    <script src="https://unpkg.com/react@15.3.2/dist/react.js"></script>
+    <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.17.0/babel.min.js"></script>
+    <style>
+      html {
+        height: 100%;
+      }
+      body {
+        height: 100%;
+        margin: 0px;
+      }
+      #main {
+        font-family: monospace;
+        font-size: 20px;
+        color: #00ff21;
+        background-color: black;
+        margin: 0px;
+        height: 100%;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <pre id="main"></pre>
+    <script src="game.js"></script>
+    <script src="shape.js"></script>
+    <script type="text/babel">
+
+      var game = new TetrisGame({width: 10, height: 18});
+
+      var interval = 600;
+
+      var currentShape = Shape.getRandom() //getRandomShape();
+
+      function render() {
+        var field = game.getField();
+        var textRep = '<br>';
+        field.forEach(function(row) {
+          textRep += '&lt!';
+          row.forEach(function(cell) {
+            if (cell !== undefined) {
+              textRep += '[]'
+            } else {
+              textRep += ' .'
+            }
+          });
+          textRep += '!&gt<br>';
+        });
+        textRep += '&lt!====================!&gt<br>';
+        textRep += '  \\/\\/\\/\\/\\/\\/\\/\\/\\/\\/  ';
+        document.querySelector('#main').innerHTML = textRep;
+      }
+
+      setInterval(
+        // move active shape downwards every x ms
+        function() {
+          game.tick();
+          if (game.over) {
+            alert('Game Over!');
+          }
+          render();
+        },
+        interval
+      );
+
+      document.querySelector('body').addEventListener('keydown', function(event) {
+        if (event.keyCode === 37 || event.keyCode === 39 || event.keyCode === 40) {
+          var direction = {37: 'l', 39: 'r', 40: 'd'}[event.keyCode];
+          var changed = game.moveCurrentShape(direction);
+          if (changed) {render();}
+        } else if (event.keyCode === 38) {
+          var changed = game.rotateCurrentShape();
+          if (changed) {render();}
+        }
+      });
+
+      render();
+    </script>
+  </body>
+</html>
