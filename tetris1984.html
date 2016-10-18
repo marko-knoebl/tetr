@@ -35,11 +35,15 @@
 
       var interval = 600;
 
-      var currentShape = Shape.getRandom() //getRandomShape();
+      var currentShape = Shape.getRandom();
 
       function render() {
         var field = game.getField();
-        var textRep = '<br>';
+        var textRep = (
+          'CLEARED: ' + game.rowsCleared + '<br>' +
+          'LEVEL: ' + game.getLevel() + '<br>' +
+          'SCORE: ' + game.score + '<br>'
+        );
         field.forEach(function(row) {
           textRep += '&lt!';
           row.forEach(function(cell) {
@@ -54,19 +58,17 @@
         textRep += '&lt!====================!&gt<br>';
         textRep += '  \\/\\/\\/\\/\\/\\/\\/\\/\\/\\/  ';
         document.querySelector('#main').innerHTML = textRep;
-      }
+      };
 
-      setInterval(
-        // move active shape downwards every x ms
-        function() {
-          game.tick();
-          if (game.over) {
-            alert('Game Over!');
-          }
-          render();
-        },
-        interval
-      );
+      var tick = function() {
+        game.tick();
+        if (game.over) {
+          alert('Game Over!');
+        }
+        render();
+        setTimeout(tick, game.getDelay() * 1000);
+      };
+      tick();
 
       document.querySelector('body').addEventListener('keydown', function(event) {
         if (event.keyCode === 37 || event.keyCode === 39 || event.keyCode === 40) {

@@ -4,6 +4,44 @@ function TetrisGame(config) {
   this.fieldSize = [config.width, config.height];
   this.existingBlocks = [];
   this.currentShape = Shape.getRandom();
+  this.score = 0;
+  this.rowsCleared = 0;
+}
+
+TetrisGame.prototype.delays = {0: 0.7, 1: 0.5, 2: 0.4, 3: 0.3, 4: 0.24, 5: 0.18};
+
+TetrisGame.prototype.rowsPerLevel = {0: 3, 1: 3, 2: 3, 3: 3, 4: 3, 5: Infinity};
+
+/**
+ * Return the number of points for a row clear
+ * based on the level and number of rows cleared
+ */
+TetrisGame.prototype.getPoints = function(level, rowsCleared) {
+  var pointsForLines = {1: 40, 2: 100, 3: 300, 4: 1200};
+  return pointsForLines[rowsCleared]*(level+1);
+};
+
+/**
+ * Return the current level
+ * (this is determied through the rowsCleared property)
+ */
+TetrisGame.prototype.getLevel = function() {
+  var level = 0;
+  var rows = 0;
+  while (true) {
+    rows += this.rowsPerLevel[level];
+    if (this.rowsCleared < rows) {
+      return level;
+    }
+    level ++;
+  }
+};
+
+/**
+ * get current delay (in s) for this level
+ */
+TetrisGame.prototype.getDelay = function(level) {
+  return this.delays[this.getLevel()];
 }
 
 /**
@@ -72,6 +110,7 @@ TetrisGame.prototype.clearFullRows = function(existingBlocks, fieldSize) {
   this.existingBlocks.forEach(function(block) {
     counts[block.position[1]] ++;
   });
+  var newRowsCleared = 0;
   for (var i = 0; i < this.fieldSize[1]; i ++) {
     if (counts[i] === this.fieldSize[0]) {
       // there's a full row
@@ -89,7 +128,12 @@ TetrisGame.prototype.clearFullRows = function(existingBlocks, fieldSize) {
       });
       // overwrite the original
       this.existingBlocks = newExistingBlocks;
+      newRowsCleared ++;
     }
+  }
+  if (newRowsCleared) {
+    this.rowsCleared += newRowsCleared;
+    this.score += this.getPoints(this.getLevel(), newRowsCleared);
   }
 }
 

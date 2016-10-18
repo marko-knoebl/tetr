@@ -8,6 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.17.0/babel.min.js"></script>
   </head>
   <body>
+    <div id="scores"></div>
     <div id="main"></div>
     <script src="game.js"></script>
     <script src="shape.js"></script>
@@ -32,6 +33,10 @@
           </div>,
           document.querySelector('#main')
         );
+        ReactDOM.render(
+          <div>cleared: {game.rowsCleared}; level: {game.getLevel()}; score: {game.score}</div>,
+          document.querySelector('#scores')
+        );
       }
       
       /**
@@ -48,17 +53,15 @@
         return <div style={ {backgroundColor: block.color, position: 'absolute', width: blockSize, height: blockSize, left: blockSize * block.position[0], top: blockSize * block.position[1]} }></div>
       }
 
-      setInterval(
-        // move active shape downwards every x ms
-        function() {
-          game.tick();
-          if (game.over) {
-            alert('Game Over!');
-          }
-          render();
-        },
-        interval
-      );
+      var tick = function() {
+        game.tick();
+        if (game.over) {
+          alert('Game Over!');
+        }
+        render();
+        setTimeout(tick, game.getDelay() * 1000);
+      };
+      tick();
 
       document.querySelector('body').addEventListener('keydown', function(event) {
         if (event.keyCode === 37 || event.keyCode === 39 || event.keyCode === 40) {
