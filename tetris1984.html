@@ -13,15 +13,17 @@
       body {
         height: 100%;
         margin: 0px;
+        background-color: black;
+        text-align: center;
+        font-size: 20px;
+        color: #00ff21;
       }
       #main {
         font-family: monospace;
-        font-size: 20px;
-        color: #00ff21;
-        background-color: black;
         margin: 0px;
         height: 100%;
-        text-align: center;
+        display: inline-block;
+        text-align: left;
       }
     </style>
   </head>
@@ -40,8 +42,8 @@
       function render() {
         var field = game.getField();
         var textRep = (
-          'CLEARED: ' + game.rowsCleared + '<br>' +
           'LEVEL: ' + game.getLevel() + '<br>' +
+          'LINES: ' + game.rowsCleared + '<br>' +
           'SCORE: ' + game.score + '<br>'
         );
         field.forEach(function(row) {
@@ -56,7 +58,7 @@
           textRep += '!&gt<br>';
         });
         textRep += '&lt!====================!&gt<br>';
-        textRep += '  \\/\\/\\/\\/\\/\\/\\/\\/\\/\\/  ';
+        textRep += '  \\/\\/\\/\\/\\/\\/\\/\\/\\/\\/';
         document.querySelector('#main').innerHTML = textRep;
       };
 

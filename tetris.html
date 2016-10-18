@@ -34,7 +34,7 @@
           document.querySelector('#main')
         );
         ReactDOM.render(
-          <div>cleared: {game.rowsCleared}; level: {game.getLevel()}; score: {game.score}</div>,
+          <div>Level: {game.getLevel()}; Lines: {game.rowsCleared}; Score: {game.score}</div>,
           document.querySelector('#scores')
         );
       }
