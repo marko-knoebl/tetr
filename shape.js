@@ -18,7 +18,7 @@ var shapeTemplates = {
   },
   J: {
     blocks: [[5, 0], [5, 1], [5, 2], [4, 2]],
-    center: [4, 1],
+    center: [5, 1],
     color: '#9e9e9e'
   },
   S: {
