@@ -2,15 +2,20 @@
 
 function TetrisGame(config) {
   this.fieldSize = [config.width, config.height];
-  this.existingBlocks = [];
-  this.currentShape = Shape.getRandom();
-  this.score = 0;
-  this.rowsCleared = 0;
+  this.reset();
 }
 
 TetrisGame.prototype.delays = {0: 0.7, 1: 0.5, 2: 0.4, 3: 0.3, 4: 0.24, 5: 0.18};
 
 TetrisGame.prototype.rowsPerLevel = {0: 3, 1: 3, 2: 3, 3: 3, 4: 3, 5: Infinity};
+
+TetrisGame.prototype.reset = function() {
+  this.existingBlocks = [];
+  this.currentShape = Shape.getRandom();
+  this.rowsCleared = 0;
+  this.score = 0;
+  this.over = false;
+};
 
 /**
  * Return the number of points for a row clear

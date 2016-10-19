@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tetris</title>
     <script src="https://unpkg.com/react@15.3.2/dist/react.js"></script>
     <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
@@ -57,6 +58,7 @@
         game.tick();
         if (game.over) {
           alert('Game Over!');
+          game.reset();
         }
         render();
         setTimeout(tick, game.getDelay() * 1000);
