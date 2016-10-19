@@ -47,11 +47,22 @@
           'LINES: ' + game.rowsCleared + '<br>' +
           'SCORE: ' + game.score + '<br>'
         );
+        if (game.over) {
+          field[4].splice(1, 8, ' .-------------.');
+          field[5].splice(1, 8, ' |   G A M E   |');
+          field[6].splice(1, 8, ' |   O V E R   |');
+          field[7].splice(1, 8, ' |             |');
+          field[8].splice(1, 8, ' | press Enter |');
+          field[9].splice(1, 8, ' |  to restart |');
+          field[10].splice(1, 8, " '-------------'");
+        }
         field.forEach(function(row) {
           textRep += '&lt!';
           row.forEach(function(cell) {
-            if (cell !== undefined) {
-              textRep += '[]'
+            if (typeof cell === 'object') {
+              textRep += '[]';
+            } else if (typeof cell === 'string') {
+              textRep += cell;
             } else {
               textRep += ' .'
             }
@@ -65,12 +76,13 @@
 
       var tick = function() {
         game.tick();
-        if (game.over) {
-          alert('Game Over!');
-          game.reset();
+        if (!game.over) {
+          render();
+          setTimeout(tick, game.getDelay() * 1000);
+        } else {
+          render();
+          return;
         }
-        render();
-        setTimeout(tick, game.getDelay() * 1000);
       };
       tick();
 
@@ -82,6 +94,10 @@
         } else if (event.keyCode === 38) {
           var changed = game.rotateCurrentShape();
           if (changed) {render();}
+        } else if (event.keyCode === 13 && game.over) {
+          // Enter key - restart the game
+          game.reset();
+          tick();
         }
       });
 
