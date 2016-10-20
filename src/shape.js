@@ -10,33 +10,33 @@ Shape.templates = {
     color: '#3f51b5'
   },
   I: {
-    blocks: [[5, 0], [5, 1], [5, 2], [5, 3]],
-    center: [4, 1],
+    blocks: [[3, 0], [4, 0], [5, 0], [6, 0]],
+    center: [4, 0],
     color: '#00bcd4'
   },
   L: {
-    blocks: [[4, 0], [4, 1], [4, 2], [5, 2]],
-    center: [4, 1],
+    blocks: [[5, 0], [4, 0], [3, 0], [3, 1]],
+    center: [4, 0],
     color: '#9c27b0'
   },
   J: {
-    blocks: [[5, 0], [5, 1], [5, 2], [4, 2]],
-    center: [5, 1],
+    blocks: [[3, 0], [4, 0], [5, 0], [5, 1]],
+    center: [4, 0],
     color: '#9e9e9e'
   },
   S: {
-    blocks: [[4, 1], [5, 1], [5, 0], [6, 0]],
-    center: [5, 1],
+    blocks: [[3, 1], [4, 1], [4, 0], [5, 0]],
+    center: [4, 1],
     color: '#4caf50'
   },
   Z: {
-    blocks: [[4, 0], [5, 0], [5, 1], [6, 1]],
-    center: [5, 1],
+    blocks: [[3, 0], [4, 0], [4, 1], [5, 1]],
+    center: [4, 1],
     color: '#f44336'
   },
   T: {
-    blocks: [[4, 0], [5, 0], [6, 0], [5, 1]],
-    center: [5, 0],
+    blocks: [[3, 0], [4, 0], [5, 0], [4, 1]],
+    center: [4, 0],
     color: '#795548'
   }
 };
@@ -109,7 +109,7 @@ Shape.prototype.rotated = function() {
 Shape.prototype.isInsideField = function(fieldSize) {
   var inside = true
   this.blocks.forEach(function(block) {
-    if (block.position[0] < 0 || block.position[0] > fieldSize[0]-1 || block.position[1] > fieldSize[1]-1) {
+    if (block.position[0] < 0 || block.position[0] > fieldSize[0]-1 || block.position[1] > fieldSize[1]-1 || block.position[1] < 0) {
       inside = false;
     }
   });
