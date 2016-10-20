@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetris</title>
+    <script src="https://unpkg.com/react@15.3.2/dist/react.js"></script>
+    <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.17.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="scores"></div>
+    <div id="main"></div>
+    <script src="tetr.js"></script>
+    <script type="text/babel">
+
+      var game = new TetrisGame({width: 10, height: 18});
+
+      // size of one block in px
+      var blockSize = 20;
+      var interval = 600;
+
+      function render() {
+        var renderStart = (new Date()).getTime()
+        ReactDOM.render(
+          <div style={ {
+              border: "1px solid #202020",
+              width: blockSize*game.fieldSize[0],
+              height: blockSize*game.fieldSize[1], position: 'relative'} }>
+            {createDivShape(game.currentShape)}
+            {game.existingBlocks.map(createDivBlock)}
+            {game.over ? gameOverMessage() : ''}
+          </div>,
+          document.querySelector('#main')
+        );
+        ReactDOM.render(
+          <div>Level: {game.getLevel()}; Lines: {game.rowsCleared}; Score: {game.score}</div>,
+          document.querySelector('#scores')
+        );
+      }
+
+      /**
+       * create a tetris shape consisting of divs
+       */
+      function createDivShape(shape) {
+        return shape.blocks.map(createDivBlock);
+      }
+
+      /**
+       * create a div representing a block at a specific position
+       */
+      function createDivBlock(block) {
+        return <div style={ {backgroundColor: block.color, position: 'absolute', width: blockSize, height: blockSize, left: blockSize * block.position[0], top: blockSize * block.position[1]} }></div>
+      }
+
+      function gameOverMessage() {
+        return <div style={ {position: 'absolute', width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.3)'} }>
+          <div style={ {position: 'absolute', width: 136, left: 32, backgroundColor: '#00bcd4', top: 112, textAlign: 'center', opacity: 1, boxShadow: '0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.2)', fontSize: '28px'} }>Game Over</div>
+        </div>
+      }
+
+      var tick = function() {
+        game.tick();
+        if (!game.over) {
+          render();
+          setTimeout(tick, game.getDelay() * 1000);
+        } else {
+          render();
+          return;
+        }
+      };
+      tick();
+
+      document.querySelector('body').addEventListener('keydown', function(event) {
+        if (event.keyCode === 37 || event.keyCode === 39 || event.keyCode === 40) {
+          var direction = {37: 'l', 39: 'r', 40: 'd'}[event.keyCode];
+          var changed = game.moveCurrentShape(direction);
+          if (changed) {render();}
+        } else if (event.keyCode === 38) {
+          var changed = game.rotateCurrentShape();
+          if (changed) {render();}
+        } else if (event.keyCode === 13 && game.over) {
+          // Enter key - restart the game
+          game.reset();
+          tick();
+        }
+      });
+
+      render();
+    </script>
+  </body>
+</html>

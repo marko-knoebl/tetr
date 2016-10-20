@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetris</title>
+  </head>
+  <body>
+    <div id="scores"></div>
+    <div id="main"></div>
+    <script src="tetr.js"></script>
+    <script>
+
+      var game = new TetrisGame({width: 10, height: 18});
+
+      // size of one block in px
+      var blockSize = 20;
+      var interval = 600;
+
+      /**
+       * replace the contents of '#main' with an updated version
+       */
+      function render() {
+
+        var container = document.createElement('div');
+        var scoresDiv = document.createElement('div');
+        container.appendChild(scoresDiv);
+        var field = document.createElement('div');
+        container.appendChild(field);
+
+        scoresDiv.innerHTML = 'Level: ' + game.getLevel() + '; Lines: ' + game.rowsCleared + '; Score: ' + game.score;
+
+        field.style.border = "1px solid #202020";
+        field.style.width = blockSize*game.fieldSize[0] + 'px';
+        field.style.height = blockSize*game.fieldSize[1] + 'px';
+        field.style.position = 'relative';
+
+        game.existingBlocks.forEach(function(block) {
+          var blockDiv = createDivBlock(block);
+          field.appendChild(blockDiv);
+        });
+        game.currentShape.blocks.forEach(function(block) {
+          var blockDiv = createDivBlock(block);
+          field.appendChild(blockDiv);
+        });
+        if (game.over) {
+          field.appendChild(gameOverMessage());
+        }
+
+        document.querySelector('#main').innerHTML = '';
+        document.querySelector('#main').appendChild(container);
+      }
+
+      /**
+       * create a div representing a block at a specific position
+       */
+      function createDivBlock(block) {
+        var blockDiv = document.createElement('div');
+        blockDiv.style.backgroundColor = block.color;
+        blockDiv.style.position = 'absolute';
+        blockDiv.style.width = blockSize + 'px';
+        blockDiv.style.height = blockSize + 'px';
+        blockDiv.style.left = blockSize * block.position[0] + 'px';
+        blockDiv.style.top = blockSize * block.position[1] + 'px';
+        return blockDiv;
+      }
+
+      function gameOverMessage() {
+        var background = document.createElement('div');
+        background.style.position = 'absolute';
+        background.style.width = '100%';
+        background.style.height = '100%';
+        background.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
+
+        var message = document.createElement('div');
+        message.style.position = 'absolute';
+        message.style.width = '136px';
+        message.style.left = '32px';
+        message.style.backgroundColor = '#00bcd4';
+        message.style.top = '112px';
+        message.style.textAlign = 'center';
+        message.style.boxShadow = '0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 10px rgba(0, 0, 0, 0.2)';
+        message.style.fontSize = '28px';
+        message.innerHTML = 'Game Over';
+        background.appendChild(message);
+
+        return background;
+      }
+
+      var tick = function() {
+        game.tick();
+        if (!game.over) {
+          render();
+          setTimeout(tick, game.getDelay() * 1000);
+        } else {
+          render();
+          return;
+        }
+      };
+      tick();
+
+      document.querySelector('body').addEventListener('keydown', function(event) {
+        if (event.keyCode === 37 || event.keyCode === 39 || event.keyCode === 40) {
+          var direction = {37: 'l', 39: 'r', 40: 'd'}[event.keyCode];
+          var changed = game.moveCurrentShape(direction);
+          if (changed) {render();}
+        } else if (event.keyCode === 38) {
+          var changed = game.rotateCurrentShape();
+          if (changed) {render();}
+        } else if (event.keyCode === 13 && game.over) {
+          // Enter key - restart the game
+          game.reset();
+          tick();
+        }
+      });
+
+      render();
+    </script>
+  </body>
+</html>

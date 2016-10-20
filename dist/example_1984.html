@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetris 1984</title>
+    <script src="https://unpkg.com/react@15.3.2/dist/react.js"></script>
+    <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.17.0/babel.min.js"></script>
+    <style>
+      html {
+        height: 100%;
+      }
+      body {
+        height: 100%;
+        margin: 0px;
+        background-color: black;
+        text-align: center;
+        font-size: 20px;
+        color: #00ff21;
+      }
+      #main {
+        font-family: monospace;
+        margin: 0px;
+        height: 100%;
+        display: inline-block;
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <pre id="main"></pre>
+    <script src="tetr.js"></script>
+    <script type="text/babel">
+
+      var game = new TetrisGame({width: 10, height: 18});
+
+      var interval = 600;
+
+      var currentShape = Shape.getRandom();
+
+      function render() {
+        var field = game.getField();
+        var textRep = (
+          'LEVEL: ' + game.getLevel() + '<br>' +
+          'LINES: ' + game.rowsCleared + '<br>' +
+          'SCORE: ' + game.score + '<br>'
+        );
+        if (game.over) {
+          field[4].splice(1, 8, ' .-------------.');
+          field[5].splice(1, 8, ' |   G A M E   |');
+          field[6].splice(1, 8, ' |   O V E R   |');
+          field[7].splice(1, 8, ' |             |');
+          field[8].splice(1, 8, ' | press Enter |');
+          field[9].splice(1, 8, ' |  to restart |');
+          field[10].splice(1, 8, " '-------------'");
+        }
+        field.forEach(function(row) {
+          textRep += '&lt!';
+          row.forEach(function(cell) {
+            if (typeof cell === 'object') {
+              textRep += '[]';
+            } else if (typeof cell === 'string') {
+              textRep += cell;
+            } else {
+              textRep += ' .'
+            }
+          });
+          textRep += '!&gt<br>';
+        });
+        textRep += '&lt!====================!&gt<br>';
+        textRep += '  \\/\\/\\/\\/\\/\\/\\/\\/\\/\\/';
+        document.querySelector('#main').innerHTML = textRep;
+      };
+
+      var tick = function() {
+        game.tick();
+        if (!game.over) {
+          render();
+          setTimeout(tick, game.getDelay() * 1000);
+        } else {
+          render();
+          return;
+        }
+      };
+      tick();
+
+      document.querySelector('body').addEventListener('keydown', function(event) {
+        if (event.keyCode === 37 || event.keyCode === 39 || event.keyCode === 40) {
+          var direction = {37: 'l', 39: 'r', 40: 'd'}[event.keyCode];
+          var changed = game.moveCurrentShape(direction);
+          if (changed) {render();}
+        } else if (event.keyCode === 38) {
+          var changed = game.rotateCurrentShape();
+          if (changed) {render();}
+        } else if (event.keyCode === 13 && game.over) {
+          // Enter key - restart the game
+          game.reset();
+          tick();
+        }
+      });
+
+      render();
+    </script>
+  </body>
+</html>
