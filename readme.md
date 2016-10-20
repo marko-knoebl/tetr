@@ -6,13 +6,15 @@ Tetr is a library that implements the model and controller part of a Tetris game
 
 These examples can be found in the dist/examples directory.
 The examples include:
-* text-based (original 1984 graphics)
-* DOM / React.js version
-* 3D (three.js) version
+* [text-based (original 1984 graphics)](http://karuga.eu/tetr/dist/example_1984.html)
+* [DOM / React.js version](http://karuga.eu/tetr/dist/example_react.html)
+* [3D (three.js) version](http://karuga.eu/tetr/dist/example_three.html)
 
-![text-based Tetris from 1984](screenshots/example_1984.png)
-![Tetris UI built with React](screenshots/example_react.png)
-![3D Tetris UI](screenshots/example_three.png)
+(click on the links above or the screenshots to play)
+
+[![text-based Tetris from 1984](screenshots/example_1984.png)](http://karuga.eu/tetr/dist/example_1984.html)
+[![Tetris UI built with React](screenshots/example_react.png)](http://karuga.eu/tetr/dist/example_react.html)
+[![3D Tetris UI](screenshots/example_three.png)](http://karuga.eu/tetr/dist/example_three.html)
 
 ## How to use
 
