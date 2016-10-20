@@ -36,7 +36,7 @@
         renderer = new THREE.WebGLRenderer();
         renderer.setClearColor(new THREE.Color(0xEEEEEE));
         renderer.setSize(window.innerWidth-20, window.innerHeight-20);
-        document.getElementById("main_").appendChild(renderer.domElement);
+        document.getElementById("main").appendChild(renderer.domElement);
 
         cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
         materials = {

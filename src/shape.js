@@ -10,7 +10,7 @@ Shape.templates = {
     color: '#3f51b5'
   },
   I: {
-    blocks: [[4, 0], [4, 1], [4, 2], [4, 3]],
+    blocks: [[5, 0], [5, 1], [5, 2], [5, 3]],
     center: [4, 1],
     color: '#00bcd4'
   },
@@ -26,12 +26,12 @@ Shape.templates = {
   },
   S: {
     blocks: [[4, 1], [5, 1], [5, 0], [6, 0]],
-    center: [5, 0],
+    center: [5, 1],
     color: '#4caf50'
   },
   Z: {
     blocks: [[4, 0], [5, 0], [5, 1], [6, 1]],
-    center: [5, 0],
+    center: [5, 1],
     color: '#f44336'
   },
   T: {
