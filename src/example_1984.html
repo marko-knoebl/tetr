@@ -39,15 +39,28 @@
 
       var interval = 600;
 
-      var currentShape = Shape.getRandom();
-
       function render() {
         var field = game.getField();
-        var textRep = (
-          'LEVEL: ' + game.getLevel() + '<br>' +
-          'LINES: ' + game.rowsCleared + '<br>' +
-          'SCORE: ' + game.score + '<br>'
-        );
+        var headerLines = [
+          'LEVEL: ' + pad(game.getLevel().toString(), 8),
+          'LINES: ' + pad(game.rowsCleared.toString(), 8),
+          'SCORE: ' + pad(game.score.toString(), 8)
+        ];
+        // create the preview for the next shape
+        for (var row = 0; row < 2; row ++) {
+          for (var column = 0; column < 4; column ++) {
+            var text = '  ';
+            for (var blockIdx = 0; blockIdx < 4; blockIdx ++) {
+              if (game.nextShape.blocks[blockIdx].position[0] === column + 3 &&
+                  game.nextShape.blocks[blockIdx].position[1] === row) {
+                var text = '[]';
+              }
+            }
+            headerLines[row] += text;
+          }
+        }
+        var textRep = headerLines.join('<br>');
+        textRep += '<br>';
         if (game.over) {
           field[4].splice(1, 8, ' .-------------.');
           field[5].splice(1, 8, ' |   G A M E   |');
@@ -74,6 +87,13 @@
         textRep += '  \\/\\/\\/\\/\\/\\/\\/\\/\\/\\/';
         document.querySelector('#main').innerHTML = textRep;
       };
+
+      function pad(str, numChar) {
+        while (str.length < numChar) {
+          str += ' ';
+        }
+        return str;
+      }
 
       var tick = function() {
         game.tick();

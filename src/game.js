@@ -12,6 +12,7 @@ TetrisGame.prototype.rowsPerLevel = {0: 3, 1: 3, 2: 3, 3: 3, 4: 3, 5: Infinity};
 TetrisGame.prototype.reset = function() {
   this.existingBlocks = [];
   this.currentShape = Shape.getRandom();
+  this.nextShape = Shape.getRandom();
   this.rowsCleared = 0;
   this.score = 0;
   this.over = false;
@@ -62,7 +63,8 @@ TetrisGame.prototype.tick = function() {
     // create a new shape instead
     this.existingBlocks = this.existingBlocks.concat(this.currentShape.blocks);
     this.clearFullRows();
-    this.currentShape = Shape.getRandom();
+    this.currentShape = this.nextShape;
+    this.nextShape = Shape.getRandom();
     if (!this.canMoveTo(this.currentShape)) {
       this.over = true;
     }
