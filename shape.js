@@ -1,6 +1,9 @@
 "use strict";
 
-var shapeTemplates = {
+function Shape() {
+}
+
+Shape.templates = {
   O: {
     blocks: [[4, 0], [5, 0], [4, 1], [5, 1]],
     center: [4.5, 0.5],
@@ -38,23 +41,26 @@ var shapeTemplates = {
   }
 };
 
-var templateNames = ['O', 'I', 'L', 'J', 'S', 'Z', 'T'];
-
-function Shape() {
-}
+Shape.templateNames = ['O', 'I', 'L', 'J', 'S', 'Z', 'T'];
 
 /**
  * create and return a random new shape
  */
 Shape.getRandom = function() {
-  var name = templateNames[Math.floor(Math.random() * templateNames.length)];
+  return Shape.create(Shape.templateNames[Math.floor(Math.random() * Shape.templateNames.length)]);
+};
+
+/**
+ * get a new Shape by name
+ */
+Shape.create = function(name) {
   var shape = new Shape();
-  shape.center = shapeTemplates[name].center.slice();
-  shape.blocks = shapeTemplates[name].blocks.map(function(block) {
-    return new Block(block[0], block[1], shapeTemplates[name].color);
+  shape.center = Shape.templates[name].center.slice();
+  shape.blocks = Shape.templates[name].blocks.map(function(block) {
+    return new Block(block[0], block[1], Shape.templates[name].color);
   });
   return shape;
-};
+}
 
 /**
  * return a copy of the shape that was moved in the specified direction
