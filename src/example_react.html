@@ -11,6 +11,7 @@
   <body>
     <div id="scores"></div>
     <div id="main"></div>
+    <div id="nextshape"></div>
     <script src="game.js"></script>
     <script src="shape.js"></script>
     <script src="block.js"></script>
@@ -38,6 +39,12 @@
         ReactDOM.render(
           <div>Level: {game.getLevel()}; Lines: {game.rowsCleared}; Score: {game.score}</div>,
           document.querySelector('#scores')
+        );
+        ReactDOM.render(
+          <div style={ {position: 'absolute', margin: 16} }>
+            <div>next:</div>
+            {createDivShape(game.nextShape)}</div>,
+          document.querySelector('#nextshape')
         );
       }
 
